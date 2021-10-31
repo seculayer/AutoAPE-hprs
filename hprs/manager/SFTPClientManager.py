@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
-# Powered by Seculayer © 2021 Service Model Team, R&D Center. 
-
+# Powered by Seculayer © 2021 Service Model Team, R&D Center.
+import json
 from typing import List
+
+import paramiko
 
 from hprs.common.sftp.PySFTPClient import PySFTPClient
 from hprs.common.Constants import Constants
@@ -24,8 +26,20 @@ class SFTPClientManager(object):
 
         self.logger.info("initialized service - [{}] SFTP Client Initialized.".format(service))
 
-    def close(self):
+    def get_client(self) -> PySFTPClient:
+        return self.sftp_client
+
+    def rename(self, src, dst) -> None:
+        self.sftp_client.rename(src, dst)
+
+    def close(self) -> None:
         self.sftp_client.close()
+
+    def load_json_data(self, filename):
+        f = self.get_client().open(filename, "r")
+        json_data = json.loads(f.read())
+        f.close()
+        return json_data
 
 
 if __name__ == '__main__':

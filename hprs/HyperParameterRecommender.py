@@ -15,6 +15,7 @@ class HyperParameterRecommender(KubePodSafetyTermThread, metaclass=Singleton):
         self.logger.info("HyperParameterRecommender Initialized!")
 
     def run(self) -> None:
+        self.hprs_manager.recommend(0)
         while not self._is_exit():
             time.sleep(1)
 
@@ -22,4 +23,10 @@ class HyperParameterRecommender(KubePodSafetyTermThread, metaclass=Singleton):
 
 
 if __name__ == '__main__':
-    hprs = HyperParameterRecommender()
+    import sys
+
+    j_id = sys.argv[1]
+    j_idx = sys.argv[2]
+    hprs = HyperParameterRecommender(j_id, j_idx)
+    hprs.start()
+    hprs.join()
