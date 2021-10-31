@@ -28,7 +28,7 @@ COPY --from=builder "$app/dist/hprs-1.0.0-py3-none-any.whl" \
         /eyeCloudAI/app/ape/hprs/hprs-1.0.0-py3-none-any.whl
 
 RUN pip3.7 install /eyeCloudAI/app/ape/hprs/hprs-1.0.0-py3-none-any.whl --no-dependencies  \
-    -t /eyeCloudAI/app/ape/hprs/lib \
+    -t /eyeCloudAI/app/ape/hprs \
     && rm /eyeCloudAI/app/ape/hprs/hprs-1.0.0-py3-none-any.whl
 
 RUN groupadd -g 1000 aiuser
