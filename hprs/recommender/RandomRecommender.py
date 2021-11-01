@@ -5,7 +5,6 @@
 import http.client
 import json
 import random
-from typing import List
 
 from hprs.common.Constants import Constants
 
@@ -51,7 +50,7 @@ class RandomRecommender(object):
                 res["alg_anal_id"] = mars_data.get("dp_analysis_id")
                 res["dp_analysis_id"] = mars_data.get("dp_analysis_id")
                 res["param_id"] = self.get_uuid()
-                res["learn_alg_id"] = mars_data.get("alg_id")
+                res["alg_id"] = mars_data.get("alg_id")
                 res["param_json"] = param_dict
                 result.append(res)
         return result
