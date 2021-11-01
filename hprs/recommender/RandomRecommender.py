@@ -23,10 +23,10 @@ class RandomRecommender(object):
         response.close()
         return data
 
-    # def get_algorithm_info(self):
-    #     return {
-    #         "KDNN": "20000000000000001", "KCNN": "20000000000000002"
-    #     }
+    def get_uuid(self):
+        self.http_client.request("GET", "/mrms/get_uuid")
+        response = self.http_client.getresponse()
+        return response.read().decode("utf-8").replace("\n", "")
 
     def recommend(self, mars_list, job_id):
         result = list()
@@ -48,6 +48,9 @@ class RandomRecommender(object):
                         param_dict[param_nm] = random.choice(param.get("param_type_value").split(","))
 
                 res["project_id"] = job_id
+                res["alg_anal_id"] = mars_data.get("dp_analysis_id")
+                res["dp_analysis_id"] = mars_data.get("dp_analysis_id")
+                res["param_id"] = self.get_uuid()
                 res["learn_alg_id"] = mars_data.get("alg_id")
                 res["param_json"] = param_dict
                 result.append(res)
