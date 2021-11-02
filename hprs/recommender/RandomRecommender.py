@@ -47,7 +47,7 @@ class RandomRecommender(object):
                         param_dict[param_nm] = random.choice(param.get("param_type_value").split(","))
 
                 res["project_id"] = job_id
-                res["alg_anal_id"] = mars_data.get("dp_analysis_id")
+                res["alg_anal_id"] = mars_data.get("alg_anal_id")
                 res["dp_analysis_id"] = mars_data.get("dp_analysis_id")
                 res["param_id"] = self.get_uuid()
                 res["alg_id"] = mars_data.get("alg_id")
