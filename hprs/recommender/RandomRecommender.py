@@ -35,10 +35,15 @@ class RandomRecommender(object):
             for i in range(random.randint(1, 3)):
                 res = dict()
                 param_dict = dict()
+                fixed_size = 0
                 for param in params_list:
                     param_nm = param.get("param_code")
                     if param.get("param_type") == "1" and param.get("param_type_value") == "list":
-                        param_dict[param_nm] = ",".join([str(random.randint(1, 64)) for i in range(random.randint(1, 3))])
+                        if param_nm == "filter_sizes" or param_nm == "pool_sizes":
+                            fixed_size = random.randint(1, 3) if fixed_size == 0 else fixed_size
+                            param_dict[param_nm] = ",".join([str(random.randint(1, 64)) for i in range(random.randint(fixed_size, fixed_size))])
+                        else:
+                            param_dict[param_nm] = ",".join([str(random.randint(1, 64)) for i in range(random.randint(1, 3))])
                     elif param.get("param_type") == "1":
                         param_dict[param_nm] = random.randint(1, 16)
                     elif param.get("param_type") == "2":
