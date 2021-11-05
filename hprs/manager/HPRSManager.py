@@ -45,6 +45,9 @@ class HPRSManager(object):
                 "w"
             )
             f.write(json.dumps(results, indent=2))
+
+            status = {"status": "6", "project_id": self.job_id}
+            self.http_client.request("POST", "/mrms/update_projects_status", body=json.dumps(status))
             f.close()
             self.current += 1
 
