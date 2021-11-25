@@ -40,13 +40,12 @@ class HPRSManager(object):
             self.logger.info(f"Recommended {len(results)} elements")
 
             response = rq.post(f"{self.rest_root_url}/mrms/insert_ml_param_info", json=results)
-            self.logger.info(f"{response.status_code} {response.reason} {response.text}")
+            self.logger.info(f"insert ml param info: {response.status_code} {response.reason} {response.text}")
 
             learn_hist_list = self.make_learn_hist(results)
             for learn_hist in learn_hist_list:
-                time.sleep(0.2)
                 response = rq.post(f"{self.rest_root_url}/mrms/insert_learn_hist", json=learn_hist)
-                self.logger.info(f"{response.status_code} {response.reason} {response.text}")
+                self.logger.info(f"insert learn hist: {response.status_code} {response.reason} {response.text}")
 
             f = self.mrms_sftp_manager.get_client().open(
                 "{}/HPRS_{}_{}.info".format(Constants.DIR_DIVISION_PATH, self.job_id, self.current),
@@ -54,10 +53,9 @@ class HPRSManager(object):
             )
             f.write(json.dumps(results, indent=2))
 
-            time.sleep(0.2)
             status = {"status": "6", "project_id": self.job_id}
             response = rq.post(f"{self.rest_root_url}/mrms/update_projects_status", json=status)
-            self.logger.info(f"{response.status_code} {response.reason} {response.text}")
+            self.logger.info(f"update project status: {response.status_code} {response.reason} {response.text}")
             f.close()
             self.current += 1
 
@@ -78,6 +76,7 @@ class HPRSManager(object):
 
     def get_uuid(self):
         response = rq.get(f"{self.rest_root_url}/mrms/get_uuid")
+        self.logger.info(f"get uuid: {response.status_code} {response.reason} {response.text}")
         return response.text.replace("\n", "")
 
 
