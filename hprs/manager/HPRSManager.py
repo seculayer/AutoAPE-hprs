@@ -2,7 +2,8 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
-import http.client
+
+import requests as rq
 import json
 from typing import List, Dict
 import time
@@ -22,8 +23,7 @@ class HPRSManager(object):
         self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(
             "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT), Constants.MRMS_USER, Constants.MRMS_PASSWD)
 
-        self.http_client: http.client.HTTPConnection = http.client.HTTPConnection(
-            Constants.MRMS_SVC, Constants.MRMS_REST_PORT)
+        self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
 
         self.job_id = job_id
         self.current = 0
@@ -39,16 +39,14 @@ class HPRSManager(object):
             results = RandomRecommender().recommend(job_info, self.job_id)
             self.logger.info(f"Recommended {len(results)} elements")
 
-            self.http_client.request("POST", "/mrms/insert_ml_param_info", body=json.dumps(results))
-            response = self.http_client.getresponse()
-            self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+            response = rq.post(f"{self.rest_root_url}/mrms/insert_ml_param_info", json=results)
+            self.logger.info(f"{response.status_code} {response.reason} {response.text}")
 
             learn_hist_list = self.make_learn_hist(results)
             for learn_hist in learn_hist_list:
                 time.sleep(0.2)
-                self.http_client.request("POST", "/mrms/insert_learn_hist", body=json.dumps(learn_hist))
-                response = self.http_client.getresponse()
-                self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+                response = rq.post(f"{self.rest_root_url}/mrms/insert_learn_hist", json=learn_hist)
+                self.logger.info(f"{response.status_code} {response.reason} {response.text}")
 
             f = self.mrms_sftp_manager.get_client().open(
                 "{}/HPRS_{}_{}.info".format(Constants.DIR_DIVISION_PATH, self.job_id, self.current),
@@ -58,16 +56,14 @@ class HPRSManager(object):
 
             time.sleep(0.2)
             status = {"status": "6", "project_id": self.job_id}
-            self.http_client.request("POST", "/mrms/update_projects_status", body=json.dumps(status))
-            response = self.http_client.getresponse()
-            self.logger.info("{} {} {}".format(response.status, response.reason, response.read()))
+            response = rq.post(f"{self.rest_root_url}/mrms/update_projects_status", json=status)
+            self.logger.info(f"{response.status_code} {response.reason} {response.text}")
             f.close()
             self.current += 1
 
     def get_terminate(self) -> bool:
-        self.http_client.request("GET", "/mrms/get_proj_sttus_cd?project_id={}".format(self.job_id))
-        response = self.http_client.getresponse()
-        status = response.read().decode("utf-8")
+        response = rq.get(f"{self.rest_root_url}/mrms/get_proj_sttus_cd?project_id={self.job_id}")
+        status = response.text.replace("\n", "")
         if status == Constants.STATUS_PROJECT_COMPLETE or status == Constants.STATUS_PROJECT_ERROR:
             return True
         return False
@@ -81,9 +77,8 @@ class HPRSManager(object):
         return ml_param_dict_list
 
     def get_uuid(self):
-        self.http_client.request("GET", "/mrms/get_uuid")
-        response = self.http_client.getresponse()
-        return response.read().decode("utf-8").replace("\n", "")
+        response = rq.get(f"{self.rest_root_url}/mrms/get_uuid")
+        return response.text.replace("\n", "")
 
 
 if __name__ == '__main__':

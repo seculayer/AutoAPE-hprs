@@ -2,7 +2,8 @@
 # Author : Jin Kim
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 AI Service Model Team, R&D Center.
-import http.client
+
+import requests as rq
 import json
 import random
 
@@ -11,21 +12,18 @@ from hprs.common.Constants import Constants
 
 class RandomRecommender(object):
     def __init__(self):
-        self.http_client: http.client.HTTPConnection = http.client.HTTPConnection(
-            Constants.MRMS_SVC, Constants.MRMS_REST_PORT)
+        self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
 
     def get_algorithm_params(self, algorithm_id):
-        self.http_client.request("GET", "/mrms/get_param_info?alg_id={}".format(algorithm_id))
-        response = self.http_client.getresponse()
-        str_data = response.read()
+        response = rq.get(f"{self.rest_root_url}/mrms/get_param_info?alg_id={algorithm_id}")
+        str_data = response.text
         data = json.loads(str_data)
         response.close()
         return data
 
     def get_uuid(self):
-        self.http_client.request("GET", "/mrms/get_uuid")
-        response = self.http_client.getresponse()
-        return response.read().decode("utf-8").replace("\n", "")
+        response = rq.get(f"{self.rest_root_url}/mrms/get_uuid")
+        return response.text.replace("\n", "")
 
     def recommend(self, mars_list, job_id):
         result = list()
