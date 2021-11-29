@@ -17,7 +17,7 @@ class HyperParameterRecommender(KubePodSafetyTermThread, metaclass=Singleton):
     def run(self) -> None:
         while not self.hprs_manager.get_terminate():
             self.hprs_manager.recommend()
-            time.sleep(1)
+            time.sleep(10)
 
         self.logger.info("HyperParameterRecommender terminate!")
 
