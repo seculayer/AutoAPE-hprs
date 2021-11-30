@@ -30,7 +30,7 @@ class RandomRecommender(object):
 
         for idx, mars_data in enumerate(mars_list):
             params_list = self.get_algorithm_params(mars_data.get("alg_id"))
-            for i in range(random.randint(3, 6)):
+            for i in range(random.randint(Constants.RCMD_MIN_COUNT, Constants.RCMD_MAX_COUNT)):
                 res = dict()
                 param_dict = dict()
                 fixed_size = 0
