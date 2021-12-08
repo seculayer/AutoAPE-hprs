@@ -20,14 +20,16 @@ class HPRSManager(object):
     def __init__(self, job_id, job_idx):
         self.logger = Common.LOGGER.get_logger()
 
-        self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(
-            "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT), Constants.MRMS_USER, Constants.MRMS_PASSWD)
-
+        self.mrms_sftp_manager = None
         self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
 
         self.job_id = job_id
         self.current = 0
         self.logger.info("HPRSManager initialized.")
+
+    def initialize(self):
+        self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(
+            "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT), Constants.MRMS_USER, Constants.MRMS_PASSWD)
 
     def load_job_info(self, filename):
         return self.mrms_sftp_manager.load_json_data(filename)
@@ -59,12 +61,21 @@ class HPRSManager(object):
             f.close()
             self.current += 1
 
+    def update_project_status(self, status):
+        status_json = {"status": status, "project_id": self.job_id}
+        response = rq.post(f"{self.rest_root_url}/mrms/update_projects_status", json=status_json)
+        self.logger.info(f"update project status: {response.status_code} {response.reason} {response.text}")
+
     def get_terminate(self) -> bool:
         response = rq.get(f"{self.rest_root_url}/mrms/get_proj_sttus_cd?project_id={self.job_id}")
         status = response.text.replace("\n", "")
         if status == Constants.STATUS_PROJECT_COMPLETE or status == Constants.STATUS_PROJECT_ERROR:
             return True
         return False
+
+    def terminate(self):
+        if self.mrms_sftp_manager is not None:
+            self.mrms_sftp_manager.close()
 
     def make_learn_hist(self, ml_param_dict_list: List[Dict]):
         for ml_param_dict in ml_param_dict_list:
