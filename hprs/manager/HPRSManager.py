@@ -35,7 +35,7 @@ class HPRSManager(object):
         return self.mrms_sftp_manager.load_json_data(filename)
 
     def recommend(self):
-        filename = "{}/MARS_{}_{}.info".format(Constants.DIR_DIVISION_PATH, self.job_id, self.current)
+        filename = f"{Constants.DIR_JOB_PATH}/{self.job_id}/MARS_{self.job_id}_{self.current}.info"
         if self.mrms_sftp_manager.is_exist(filename):
             job_info = self.load_job_info(filename)
             results = RandomRecommender().recommend(job_info, self.job_id)
@@ -50,7 +50,7 @@ class HPRSManager(object):
                 self.logger.info(f"insert learn hist: {response.status_code} {response.reason} {response.text}")
 
             f = self.mrms_sftp_manager.get_client().open(
-                "{}/HPRS_{}_{}.info".format(Constants.DIR_DIVISION_PATH, self.job_id, self.current),
+                f"{Constants.DIR_JOB_PATH}/{self.job_id}/HPRS_{self.job_id}_{self.current}.info",
                 "w"
             )
             f.write(json.dumps(results, indent=2))
