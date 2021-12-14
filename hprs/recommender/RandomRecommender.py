@@ -13,6 +13,8 @@ from hprs.common.Constants import Constants
 class RandomRecommender(object):
     def __init__(self):
         self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
+        self.image_conv_fn_set = ["Conv2D"]
+        self.image_pooling_fn_set = ["Max2D", "Average2D"]
 
     def get_algorithm_params(self, algorithm_id):
         response = rq.get(f"{self.rest_root_url}/mrms/get_param_info?alg_id={algorithm_id}")
@@ -47,7 +49,15 @@ class RandomRecommender(object):
                     elif param.get("param_type") == "2":
                         param_dict[param_nm] = random.random()
                     elif param.get("param_type") == "3":
-                        param_dict[param_nm] = random.choice(param.get("param_type_value").split(","))
+                        if int(mars_data.get("dataset_format")) == 2:  # case image dataset
+                            if param_nm == "conv_fn":
+                                param_dict[param_nm] = random.choice(self.image_conv_fn_set)
+                            elif param_nm == "pooling_fn":
+                                param_dict[param_nm] = random.choice(self.image_pooling_fn_set)
+                            else:
+                                param_dict[param_nm] = random.choice(param.get("param_type_value").split(","))
+                        else:
+                            param_dict[param_nm] = random.choice(param.get("param_type_value").split(","))
 
                 res["project_id"] = job_id
                 res["alg_anal_id"] = mars_data.get("alg_anal_id")
