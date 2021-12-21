@@ -41,13 +41,21 @@ class RandomRecommender(object):
                     if param.get("param_type") == "1" and param.get("param_type_value") == "list":
                         if param_nm == "filter_sizes" or param_nm == "pool_sizes":
                             fixed_size = random.randint(1, 3) if fixed_size == 0 else fixed_size
-                            param_dict[param_nm] = ",".join([str(random.randint(1, 64)) for i in range(random.randint(fixed_size, fixed_size))])
+                            param_dict[param_nm] = ",".join([str(random.randint(2, 8)) for i in range(random.randint(fixed_size, fixed_size))])
                         else:
-                            param_dict[param_nm] = ",".join([str(random.randint(1, 64)) for i in range(random.randint(1, 3))])
+                            param_dict[param_nm] = ",".join([str(random.randint(3, 1024)) for i in range(random.randint(1, 3))])
                     elif param.get("param_type") == "1":
-                        param_dict[param_nm] = random.randint(1, 16)
+                        if param_nm == "n_neighbors":
+                            param_dict[param_nm] = random.randint(2, 3)
+                        else:
+                            param_dict[param_nm] = random.randint(1, 16)
                     elif param.get("param_type") == "2":
-                        param_dict[param_nm] = random.random()
+                        if param_nm == "dropout_prob":
+                            param_dict[param_nm] = random.uniform(0, 0.5)
+                        elif param_nm == "learning_rate":
+                            param_dict[param_nm] = random.uniform(0, 0.8)
+                        else:
+                            param_dict[param_nm] = random.random()
                     elif param.get("param_type") == "3":
                         if int(mars_data.get("dataset_format")) == 2:  # case image dataset
                             if param_nm == "conv_fn":
