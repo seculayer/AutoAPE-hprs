@@ -40,6 +40,7 @@ class HPRSManager(object):
             job_info = self.load_job_info(filename)
             results = RandomRecommender().recommend(job_info, self.job_id)
             self.logger.info(f"Recommended {len(results)} elements")
+            self.logger.debug(f"project_id: {self.job_id}, Recommended: {results}")
 
             response = rq.post(f"{self.rest_root_url}/mrms/insert_ml_param_info", json=results)
             self.logger.info(f"insert ml param info: {response.status_code} {response.reason} {response.text}")
