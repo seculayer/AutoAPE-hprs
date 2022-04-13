@@ -5,9 +5,7 @@
 import json
 from typing import List
 
-import paramiko
-
-from hprs.common.sftp.PySFTPClient import PySFTPClient
+from pycmmn.sftp.PySFTPClient import PySFTPClient
 from hprs.common.Constants import Constants
 from hprs.common.Common import Common
 
@@ -16,7 +14,7 @@ class SFTPClientManager(object):
     # class : SFTPClientManager
 
     def __init__(self, service: str, username: str, password: str):
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
         self.service: List[str] = service.split(":")
         self.username = username
         self.password = password

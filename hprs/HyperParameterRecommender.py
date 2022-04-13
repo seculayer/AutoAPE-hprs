@@ -1,6 +1,6 @@
 import time
-from hprs.common.Singleton import Singleton
-from hprs.common.thread.KubePodSafetyTermThread import KubePodSafetyTermThread
+from pycmmn.Singleton import Singleton
+from pycmmn.KubePodSafetyTermThread import KubePodSafetyTermThread
 from hprs.common.Common import Common
 from hprs.common.Constants import Constants
 from hprs.manager.HPRSManager import HPRSManager
@@ -9,7 +9,7 @@ from hprs.manager.HPRSManager import HPRSManager
 class HyperParameterRecommender(KubePodSafetyTermThread, metaclass=Singleton):
     def __init__(self, job_id: str, job_idx: str):
         KubePodSafetyTermThread.__init__(self)
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
 
         self.hprs_manager = HPRSManager(job_id, job_idx)
         try:

@@ -4,9 +4,9 @@
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
 # ---- automl packages
-from hprs.common.Singleton import Singleton
-from hprs.common.logger.MPLogger import MPLogger
-from hprs.common.utils.FileUtils import FileUtils
+from pycmmn.Singleton import Singleton
+from pycmmn.logger.MPLogger import MPLogger
+from pycmmn.utils.FileUtils import FileUtils
 from hprs.common.Constants import Constants
 
 

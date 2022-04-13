@@ -3,9 +3,9 @@
 # e-mail : jin.kim@seculayer.com
 # Powered by Seculayer © 2021 Service Model Team, R&D Center.
 
-from hprs.common.Singleton import Singleton
-from hprs.common.utils.ConfUtils import ConfUtils
-from hprs.common.utils.FileUtils import FileUtils
+from pycmmn.Singleton import Singleton
+from pycmmn.utils.ConfUtils import ConfUtils
+from pycmmn.utils.FileUtils import FileUtils
 
 import os
 os.chdir(FileUtils.get_realpath(__file__) + "/../../")

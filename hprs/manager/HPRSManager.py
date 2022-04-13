@@ -6,9 +6,8 @@
 import requests as rq
 import json
 from typing import List, Dict
-import time
 
-from hprs.common.utils.Utils import Utils
+from pycmmn.utils.Utils import Utils
 from hprs.common.Common import Common
 from hprs.common.Constants import Constants
 from hprs.manager.SFTPClientManager import SFTPClientManager
@@ -18,7 +17,7 @@ from hprs.recommender.RandomRecommender import RandomRecommender
 class HPRSManager(object):
     # class : DataAnalyzerManager
     def __init__(self, job_id, job_idx):
-        self.logger = Common.LOGGER.get_logger()
+        self.logger = Common.LOGGER.getLogger()
 
         self.mrms_sftp_manager = None
         self.rest_root_url = f"http://{Constants.MRMS_SVC}:{Constants.MRMS_REST_PORT}"
