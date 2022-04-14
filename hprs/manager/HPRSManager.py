@@ -10,7 +10,7 @@ from typing import List, Dict
 from pycmmn.utils.Utils import Utils
 from hprs.common.Common import Common
 from hprs.common.Constants import Constants
-from hprs.manager.SFTPClientManager import SFTPClientManager
+from pycmmn.sftp.SFTPClientManager import SFTPClientManager
 from hprs.recommender.RandomRecommender import RandomRecommender
 
 
@@ -28,7 +28,9 @@ class HPRSManager(object):
 
     def initialize(self):
         self.mrms_sftp_manager: SFTPClientManager = SFTPClientManager(
-            "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT), Constants.MRMS_USER, Constants.MRMS_PASSWD)
+            "{}:{}".format(Constants.MRMS_SVC, Constants.MRMS_SFTP_PORT),
+            Constants.MRMS_USER, Constants.MRMS_PASSWD, self.logger
+        )
 
     def load_job_info(self, filename):
         return self.mrms_sftp_manager.load_json_data(filename)
