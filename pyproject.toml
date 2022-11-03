@@ -1,9 +1,7 @@
 [tool.poetry]
 name = "hprs"
 version = "1.0.0"
-description = """SecuLayer Inc. AutoML Project
-Module : HPRS(Hyper Parameter Recommend Server)
-"""
+description = "AutoAPE : HPRS(Hyper Parameter Recommend Server)"
 authors = ["Jin Kim <jin.kim@seculayer.com>"]
 include = ["conf"]
 
