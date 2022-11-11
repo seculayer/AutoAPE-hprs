@@ -49,6 +49,8 @@ class RandomRecommender(object):
                             param_dict[param_nm] = random.randint(2, 3)
                         elif param_nm == "seq_term":
                             param_dict[param_nm] = 60
+                        elif param_nm == "n_estimators":
+                            param_dict[param_nm] = random.randint(1000, 1500)
                         else:
                             param_dict[param_nm] = random.randint(1, 16)
                     elif param.get("param_type") == "2":
