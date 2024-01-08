@@ -51,8 +51,9 @@ class HPRSManager(object):
                 response = rq.post(f"{self.rest_root_url}/mrms/insert_learn_hist", json=learn_hist)
                 self.logger.info(f"insert learn hist: {response.status_code} {response.reason} {response.text}")
 
+            file_nm = f"{Constants.DIR_JOB_PATH}/{self.job_id}/HPRS_{self.job_id}_{self.current}"
             f = self.mrms_sftp_manager.get_client().open(
-                f"{Constants.DIR_JOB_PATH}/{self.job_id}/HPRS_{self.job_id}_{self.current}.info",
+                f"{file_nm}.tmp",
                 "w"
             )
             f.write(json.dumps(results, indent=2))
@@ -61,6 +62,7 @@ class HPRSManager(object):
             response = rq.post(f"{self.rest_root_url}/mrms/update_projects_status", json=status)
             self.logger.info(f"update project status: {response.status_code} {response.reason} {response.text}")
             f.close()
+            self.mrms_sftp_manager.rename(f"{file_nm}.tmp", f"{file_nm}.info")
             self.current += 1
 
     def update_project_status(self, status):
