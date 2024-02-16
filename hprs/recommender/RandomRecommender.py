@@ -29,6 +29,7 @@ class RandomRecommender(object):
 
     def recommend(self, mars_list, job_id):
         result = list()
+        is_first = True
 
         for idx, mars_data in enumerate(mars_list):
             params_list = self.get_algorithm_params(mars_data.get("alg_id"))
@@ -49,11 +50,31 @@ class RandomRecommender(object):
                             param_dict[param_nm] = random.randint(2, 3)
                         elif param_nm == "seq_term":
                             param_dict[param_nm] = 60
+                        elif param_nm == "n_estimators":
+                            if is_first:
+                                param_dict[param_nm] = 20
+                            else:
+                                param_dict[param_nm] = random.randint(1000, 1500)
+                        elif param_nm == "num_leaves":
+                            if is_first:
+                                param_dict[param_nm] = 41
+                            else:
+                                param_dict[param_nm] = random.randint(15, 80)
+                        elif param_nm == "max_depth":
+                            if is_first:
+                                param_dict[param_nm] = 21
+                            else:
+                                param_dict[param_nm] = random.randint(1, 16)
                         else:
                             param_dict[param_nm] = random.randint(1, 16)
                     elif param.get("param_type") == "2":
                         if param_nm == "dropout_prob":
                             param_dict[param_nm] = random.uniform(0, 0.5)
+                        elif param_nm == "contamination":
+                            if is_first:
+                                param_dict[param_nm] = 0.1
+                            else:
+                                param_dict[param_nm] = random.uniform(0, 0.3)
                         elif param_nm == "learning_rate":
                             param_dict[param_nm] = random.uniform(0, 0.8)
                         else:
@@ -76,6 +97,8 @@ class RandomRecommender(object):
                 res["alg_id"] = mars_data.get("alg_id")
                 res["param_json"] = param_dict
                 result.append(res)
+
+                is_first = False
         return result
 
 
